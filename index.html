@@ -31,20 +31,23 @@
   .section-title-centered { font-size:16.25px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:17.5px; font-weight:700; text-align:center; }
 
   /* ГОРИЗОНТАЛЬНАЯ ГАЛЕРЕЯ МИССИЙ */
-  .carousel-wrap { overflow-x:auto; overflow-y:visible; margin:0 -10px 30px; padding:0 10px; 
-                   scrollbar-width:none; -ms-overflow-style:none; }
+  .carousel-wrap { overflow-x:scroll; overflow-y:visible; margin:0 -10px 30px; padding:0 10px; 
+                   scroll-snap-type:x mandatory; scrollbar-width:none; -ms-overflow-style:none;
+                   scroll-behavior:smooth; }
   .carousel-wrap::-webkit-scrollbar { display:none; }
   .carousel { display:flex; gap:20px; padding-bottom:10px; }
   
   .mission-card {
-    min-width:calc(100% - 60px); flex-shrink:0;
+    min-width:calc(100% - 60px); flex-shrink:0; scroll-snap-align:center;
     padding:35px 25px; border-radius:18px;
     background:linear-gradient(135deg,#1a3a8a,#2c8fbf);
     color:#fff; text-align:center; cursor:pointer;
     box-shadow:0 8px 32px rgba(0,0,0,.35);
-    transition:transform .2s;
+    transition:all .4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform:scale(0.92);
+    opacity:0.7;
   }
-  .mission-card:active { transform:scale(.98); }
+  .mission-card.active { transform:scale(1); opacity:1; box-shadow:0 12px 40px rgba(56,189,248,.4); }
   .mission-card .date { font-size:33px; font-weight:800; display:block; }
   .mission-card .city { font-size:22.5px; color:#dbeafe; display:block; margin-top:8px; }
   .mission-card .addr { font-size:19.5px; color:#bfdbfe; display:block; margin-top:4px; }
@@ -53,7 +56,7 @@
   /* СПИСОК ДИАГНОСТОВ под активной кнопкой */
   .diagnost-list { overflow:hidden; max-height:0; transition:max-height .4s ease; margin-bottom:20px; }
   .diagnost-list.open { max-height:2500px; }
-  .diag-card { display:flex; align-items:center; gap:15px; background:#1e293b; border-radius:14px; padding:17.5px; margin-bottom:12.5px; }
+  .diag-card { display:flex; align-items:center; gap:15px; background:#1e293b; border-radius:14px; padding:8.75px 8.75px 8.75px 8.75px; margin-bottom:12.5px; }
   .diag-photo { width:75px; height:100px; border-radius:10px; flex-shrink:0; background:#334155; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:#38bdf8; overflow:hidden; }
   .diag-photo img { width:100%; height:100%; object-fit:cover; }
   .diag-info { flex:1; min-width:0; }
@@ -76,10 +79,14 @@
 
   .divider { border:none; border-top:2px solid #1e293b; margin:40px 0 30px; }
   .section-title { font-size:16.25px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:17.5px; font-weight:700; text-align:center; }
-  .missions-table { width:100%; border-collapse:collapse; }
-  .missions-table th { text-align:left; font-size:13.75px; color:#64748b; padding:0 0 12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
-  .missions-table td { font-size:16.25px; padding:12.5px 0; border-top:1px solid #1e293b; color:#cbd5e1; }
-  .missions-table td:first-child { color:#38bdf8; font-weight:600; white-space:nowrap; }
+  
+  /* ТАБЛИЦА ЗАВЕРШЕННЫХ МИССИЙ */
+  .missions-table { width:100%; border-collapse:separate; border-spacing:0 8px; }
+  .missions-table th { text-align:left; font-size:12.4px; color:#64748b; padding:0 8px 12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+  .missions-table td { font-size:14.6px; padding:11.25px 8px; background:#1e293b; color:#cbd5e1; }
+  .missions-table td:first-child { color:#38bdf8; font-weight:600; font-stretch:condensed; border-radius:10px 0 0 10px; }
+  .missions-table td:last-child { border-radius:0 10px 10px 0; }
+  
   .logout { background:#334155; color:#e2e8f0; margin-top:10px; }
 </style>
 </head>
@@ -89,7 +96,7 @@
   <div class="brand-logo">
     <img src="logo.png" alt="K-systems group">
   </div>
-  <div class="logo">Кабинет <span>Наставника</span></div>
+  <div class="logo">Кабинет <span>наставника</span></div>
   <div class="subtitle">Авторизация для работы</div>
   <input type="text" placeholder="Логин / Email" value="Роман Быков">
   <input type="password" placeholder="Пароль" value="1234">
@@ -97,7 +104,9 @@
 </div>
 
 <div id="dashboard" class="screen">
-  <div class="avatar-circle">РБ</div>
+  <div class="avatar-circle">
+    <img src="bykov.png" alt="Роман Быков">
+  </div>
   <div class="welcome">
     <p>Добро пожаловать,</p>
     <h1>Роман Быков!</h1>
@@ -105,21 +114,21 @@
 
   <div class="section-title-centered">Ваша миссия на сегодня</div>
 
-  <div class="carousel-wrap">
+  <div class="carousel-wrap" id="carousel">
     <div class="carousel">
-      <div class="mission-card" onclick="openList('list1')">
+      <div class="mission-card active" data-index="0" onclick="selectCard(0)">
         <span class="date">25.10.26</span>
         <span class="city">г. Москва</span>
         <span class="addr">ул. Набережная, 18</span>
         <span class="hint">Нажмите, чтобы открыть список диагностов</span>
       </div>
-      <div class="mission-card" onclick="openList('list2')">
+      <div class="mission-card" data-index="1" onclick="selectCard(1)">
         <span class="date">02.11.26</span>
         <span class="city">г. Казань</span>
         <span class="addr">ул. Кремлевская, 12</span>
         <span class="hint">Нажмите, чтобы открыть список диагностов</span>
       </div>
-      <div class="mission-card" onclick="openList('list3')">
+      <div class="mission-card" data-index="2" onclick="selectCard(2)">
         <span class="date">09.11.26</span>
         <span class="city">г. Екатеринбург</span>
         <span class="addr">ул. Малышева, 51</span>
@@ -129,9 +138,11 @@
   </div>
 
   <!-- СПИСОК 1 -->
-  <div id="list1" class="diagnost-list">
+  <div id="list0" class="diagnost-list">
     <div class="diag-card">
-      <div class="diag-photo">НЗ</div>
+      <div class="diag-photo">
+        <img src="zinoviev_n.png" alt="Зиновьев Н.А.">
+      </div>
       <div class="diag-info">
         <div class="name">Зиновьев Николай Александрович</div>
         <div class="pos">Генеральный директор</div>
@@ -141,7 +152,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">ФП</div>
+      <div class="diag-photo">
+        <img src="fastov.png" alt="Фастов П.В.">
+      </div>
       <div class="diag-info">
         <div class="name">Фастов Пётр Витальевич</div>
         <div class="pos">Прораб</div>
@@ -151,7 +164,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">ЗК</div>
+      <div class="diag-photo">
+        <img src="zaryankin.png" alt="Зарянкин К.А.">
+      </div>
       <div class="diag-info">
         <div class="name">Зарянкин Константин Александрович</div>
         <div class="pos">Мастер</div>
@@ -161,7 +176,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">ХА</div>
+      <div class="diag-photo">
+        <img src="haritonov.png" alt="Харитонов А.И.">
+      </div>
       <div class="diag-info">
         <div class="name">Харитонов Андрей Иванович</div>
         <div class="pos">Мастер</div>
@@ -171,7 +188,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">СИ</div>
+      <div class="diag-photo">
+        <img src="sorokin.png" alt="Сорокин И.А.">
+      </div>
       <div class="diag-info">
         <div class="name">Сорокин Иван Александрович</div>
         <div class="pos">Технический директор</div>
@@ -181,7 +200,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">ЗД</div>
+      <div class="diag-photo">
+        <img src="zinoviev_d.png" alt="Зиновьев Д.А.">
+      </div>
       <div class="diag-info">
         <div class="name">Зиновьев Даниил Александрович</div>
         <div class="pos">Изолировщик на гидроизоляции</div>
@@ -198,9 +219,11 @@
   </div>
 
   <!-- СПИСОК 2 -->
-  <div id="list2" class="diagnost-list">
+  <div id="list1" class="diagnost-list">
     <div class="diag-card">
-      <div class="diag-photo">ИП</div>
+      <div class="diag-photo">
+        <img src="ivanov.png" alt="Иванов П.С.">
+      </div>
       <div class="diag-info">
         <div class="name">Иванов Петр Сергеевич</div>
         <div class="pos">Инженер ВИК</div>
@@ -210,7 +233,9 @@
       <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
     <div class="diag-card">
-      <div class="diag-photo">КМ</div>
+      <div class="diag-photo">
+        <img src="kozlov.png" alt="Козлов М.В.">
+      </div>
       <div class="diag-info">
         <div class="name">Козлов Максим Викторович</div>
         <div class="pos">Дефектоскопист</div>
@@ -227,9 +252,11 @@
   </div>
 
   <!-- СПИСОК 3 -->
-  <div id="list3" class="diagnost-list">
+  <div id="list2" class="diagnost-list">
     <div class="diag-card">
-      <div class="diag-photo">СА</div>
+      <div class="diag-photo">
+        <img src="smirnov.png" alt="Смирнов А.П.">
+      </div>
       <div class="diag-info">
         <div class="name">Смирнов Алексей Павлович</div>
         <div class="pos">Технолог УЗК</div>
@@ -261,6 +288,7 @@
 </div>
 
 <script>
+  let currentCard = 0;
   let currentList = null;
 
   function login(){
@@ -270,20 +298,28 @@
 
   function logout(){
     document.getElementById('dashboard').classList.remove('active');
-    if(currentList) document.getElementById(currentList).classList.remove('open');
+    if(currentList !== null) document.getElementById('list'+currentList).classList.remove('open');
     currentList = null;
+    currentCard = 0;
     document.getElementById('login').classList.add('active');
   }
 
-  function openList(listId){
-    // Закрываем предыдущий
-    if(currentList && currentList !== listId){
-      document.getElementById(currentList).classList.remove('open');
+  function selectCard(index){
+    // Обновляем активную карточку
+    document.querySelectorAll('.mission-card').forEach((card, i) => {
+      card.classList.toggle('active', i === index);
+    });
+    
+    // Закрываем предыдущий список
+    if(currentList !== null && currentList !== index){
+      document.getElementById('list'+currentList).classList.remove('open');
     }
-    // Открываем/закрываем текущий
-    const list = document.getElementById(listId);
+    
+    // Открываем/закрываем текущий список
+    const list = document.getElementById('list'+index);
     list.classList.toggle('open');
-    currentList = list.classList.contains('open') ? listId : null;
+    currentList = list.classList.contains('open') ? index : null;
+    currentCard = index;
   }
 
   function toggleCheck(el){
@@ -293,11 +329,27 @@
 
   function completeMission(){
     alert('Обучение завершено! Анкета отправлена.');
-    if(currentList){
-      document.getElementById(currentList).classList.remove('open');
+    if(currentList !== null){
+      document.getElementById('list'+currentList).classList.remove('open');
       currentList = null;
     }
   }
+
+  // Обновление активной карточки при скролле
+  const carousel = document.getElementById('carousel');
+  carousel.addEventListener('scroll', () => {
+    const cards = document.querySelectorAll('.mission-card');
+    const scrollLeft = carousel.scrollLeft;
+    const cardWidth = cards[0].offsetWidth + 20;
+    const newIndex = Math.round(scrollLeft / cardWidth);
+    
+    if(newIndex !== currentCard && newIndex >= 0 && newIndex < cards.length){
+      cards.forEach((card, i) => {
+        card.classList.toggle('active', i === newIndex);
+      });
+      currentCard = newIndex;
+    }
+  });
 </script>
 </body>
 </html>
