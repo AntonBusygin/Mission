@@ -7,190 +7,253 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
   body { background:#0f172a; color:#e2e8f0; min-height:100vh; }
-  .screen { display:none; padding:20px; max-width:480px; margin:0 auto; }
+  .screen { display:none; padding:10px; max-width:480px; margin:0 auto; }
   .screen.active { display:block; }
 
-  /* ===== ЭКРАН ВХОДА ===== */
+  /* ЭКРАН ВХОДА */
   #login { display:flex; flex-direction:column; justify-content:center; min-height:100vh; }
-  .brand { text-align:center; margin-bottom:8px; font-size:12px; text-transform:uppercase;
-           letter-spacing:2px; color:#64748b; }
-  .brand strong { color:#38bdf8; font-size:18px; letter-spacing:1px; text-transform:none; }
-  .logo { text-align:center; font-size:22px; font-weight:700; margin-bottom:8px; }
+  .brand-logo { text-align:center; margin-bottom:60px; }
+  .brand-logo img { max-width:280px; width:90%; height:auto; display:inline-block; }
+  .logo { text-align:center; font-size:27.5px; font-weight:700; margin-bottom:10px; }
   .logo span { color:#38bdf8; }
-  .subtitle { text-align:center; color:#94a3b8; margin-bottom:32px; font-size:14px; }
-  input { width:100%; padding:14px; margin-bottom:14px; border:none; border-radius:12px;
-          background:#1e293b; color:#e2e8f0; font-size:15px; }
+  .subtitle { text-align:center; color:#94a3b8; margin-bottom:40px; font-size:17.5px; }
+  input { width:100%; padding:17.5px; margin-bottom:17.5px; border:none; border-radius:12px; background:#1e293b; color:#e2e8f0; font-size:18.75px; }
   input::placeholder { color:#64748b; }
-  button { width:100%; padding:14px; border:none; border-radius:12px; background:#38bdf8;
-           color:#0f172a; font-weight:700; font-size:16px; cursor:pointer; }
+  button { width:100%; padding:17.5px; border:none; border-radius:12px; background:#38bdf8; color:#0f172a; font-weight:700; font-size:20px; cursor:pointer; }
   button:active { opacity:.8; }
 
-  /* ===== ЭКРАН НАСТАВНИКА ===== */
-  .welcome { margin-bottom:24px; }
-  .welcome h1 { font-size:24px; font-weight:700; color:#fff; }
-  .welcome p { font-size:14px; color:#94a3b8; margin-top:4px; }
+  /* ЭКРАН НАСТАВНИКА */
+  .avatar-circle { width:80px; height:80px; border-radius:50%; background:#1e40af; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; color:#fff; overflow:hidden; }
+  .avatar-circle img { width:100%; height:100%; object-fit:cover; }
+  .welcome { margin-bottom:30px; text-align:center; }
+  .welcome h1 { font-size:30px; font-weight:700; color:#fff; }
+  .welcome p { font-size:17.5px; color:#94a3b8; margin-top:5px; }
+  .section-title-centered { font-size:16.25px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:17.5px; font-weight:700; text-align:center; }
 
-  /* Большая кнопка миссии */
-  .mission-btn {
-    width:100%; padding:28px 20px; border:none; border-radius:18px;
-    background:linear-gradient(135deg,#1e40af,#38bdf8);
-    color:#fff; font-size:15px; font-weight:600; cursor:pointer;
-    text-align:center; line-height:1.8; margin-bottom:28px;
-    box-shadow:0 8px 32px rgba(56,189,248,.25);
-    transition:transform .15s, box-shadow .15s;
+  /* ГОРИЗОНТАЛЬНАЯ ГАЛЕРЕЯ МИССИЙ */
+  .carousel-wrap { overflow-x:auto; overflow-y:visible; margin:0 -10px 30px; padding:0 10px; 
+                   scrollbar-width:none; -ms-overflow-style:none; }
+  .carousel-wrap::-webkit-scrollbar { display:none; }
+  .carousel { display:flex; gap:20px; padding-bottom:10px; }
+  
+  .mission-card {
+    min-width:calc(100% - 60px); flex-shrink:0;
+    padding:35px 25px; border-radius:18px;
+    background:linear-gradient(135deg,#1a3a8a,#2c8fbf);
+    color:#fff; text-align:center; cursor:pointer;
+    box-shadow:0 8px 32px rgba(0,0,0,.35);
+    transition:transform .2s;
   }
-  .mission-btn:active { transform:scale(.97); box-shadow:0 4px 16px rgba(56,189,248,.2); }
-  .mission-btn .date { font-size:22px; font-weight:800; display:block; }
-  .mission-btn .city { font-size:15px; color:#dbeafe; display:block; }
-  .mission-btn .addr { font-size:13px; color:#bfdbfe; display:block; }
-  .mission-btn .hint { font-size:11px; color:#93c5fd; margin-top:10px; display:block; }
+  .mission-card:active { transform:scale(.98); }
+  .mission-card .date { font-size:33px; font-weight:800; display:block; }
+  .mission-card .city { font-size:22.5px; color:#dbeafe; display:block; margin-top:8px; }
+  .mission-card .addr { font-size:19.5px; color:#bfdbfe; display:block; margin-top:4px; }
+  .mission-card .hint { font-size:13.75px; color:#93c5fd; margin-top:12px; display:block; }
 
-  /* Завершённые миссии */
-  .section-title { font-size:13px; color:#94a3b8; text-transform:uppercase;
-                   letter-spacing:.5px; margin-bottom:14px; font-weight:700; }
-  .missions-table { width:100%; border-collapse:collapse; }
-  .missions-table th { text-align:left; font-size:11px; color:#64748b; padding:0 0 10px;
-                       font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
-  .missions-table td { font-size:13px; padding:10px 0; border-top:1px solid #1e293b; color:#cbd5e1; }
-  .missions-table td:first-child { color:#38bdf8; font-weight:600; white-space:nowrap; }
-
-  /* ===== СПИСОК ДИАГНОСТОВ (раскрывается по клику) ===== */
-  #diagnost-list { overflow:hidden; max-height:0; transition:max-height .4s ease; margin-bottom:20px; }
-  #diagnost-list.open { max-height:2000px; }
-
-  .diag-card {
-    display:flex; align-items:center; gap:12px;
-    background:#1e293b; border-radius:14px; padding:14px; margin-bottom:10px;
-  }
-  .diag-photo {
-    width:60px; height:80px; border-radius:10px; flex-shrink:0;
-    background:#334155; display:flex; align-items:center; justify-content:center;
-    font-size:20px; font-weight:700; color:#38bdf8; overflow:hidden;
-  }
+  /* СПИСОК ДИАГНОСТОВ под активной кнопкой */
+  .diagnost-list { overflow:hidden; max-height:0; transition:max-height .4s ease; margin-bottom:20px; }
+  .diagnost-list.open { max-height:2500px; }
+  .diag-card { display:flex; align-items:center; gap:15px; background:#1e293b; border-radius:14px; padding:17.5px; margin-bottom:12.5px; }
+  .diag-photo { width:75px; height:100px; border-radius:10px; flex-shrink:0; background:#334155; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:#38bdf8; overflow:hidden; }
   .diag-photo img { width:100%; height:100%; object-fit:cover; }
   .diag-info { flex:1; min-width:0; }
-  .diag-info .org { font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:.3px; }
-  .diag-info .name { font-size:15px; font-weight:700; color:#fff; margin:2px 0; }
-  .diag-info .pos { font-size:12px; color:#94a3b8; }
-  .diag-info .phone { font-size:12px; color:#cbd5e1; margin-top:3px; }
-  .diag-info .email { font-size:11px; color:#64748b; word-break:break-all; }
-
-  .diag-check {
-    width:36px; height:36px; border-radius:10px; flex-shrink:0;
-    border:2px solid #475569; background:transparent;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    font-size:18px; color:#22c55e; transition:all .2s;
-  }
+  .diag-info .name { font-size:18.75px; font-weight:700; color:#fff; margin:2px 0; }
+  .diag-info .pos { font-size:15px; color:#94a3b8; }
+  .diag-info .phone { font-size:15px; color:#cbd5e1; margin-top:3px; }
+  .diag-info .email { font-size:13.75px; color:#64748b; word-break:break-all; }
+  .diag-check { width:45px; height:45px; border-radius:10px; flex-shrink:0; border:2px solid #475569; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22.5px; color:#22c55e; transition:all .2s; }
   .diag-check.checked { background:#22c55e; border-color:#22c55e; color:#052e16; }
 
-  /* ===== LOGOUT ===== */
-  .logout { background:#334155; color:#e2e8f0; margin-top:8px; }
+  /* КНОПКА ЗАВЕРШЕНИЯ */
+  .complete-btn { width:100%; padding:20px; border:none; border-radius:14px; 
+                  background:linear-gradient(135deg,#22c55e,#16a34a); 
+                  color:#fff; cursor:pointer; text-align:center;
+                  box-shadow:0 6px 24px rgba(34,197,94,.3);
+                  margin-bottom:30px; transition:transform .2s; }
+  .complete-btn:active { transform:scale(.98); }
+  .complete-btn .main { font-size:20px; font-weight:700; display:block; }
+  .complete-btn .sub { font-size:15px; color:#dcfce7; display:block; margin-top:4px; }
+
+  .divider { border:none; border-top:2px solid #1e293b; margin:40px 0 30px; }
+  .section-title { font-size:16.25px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:17.5px; font-weight:700; text-align:center; }
+  .missions-table { width:100%; border-collapse:collapse; }
+  .missions-table th { text-align:left; font-size:13.75px; color:#64748b; padding:0 0 12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+  .missions-table td { font-size:16.25px; padding:12.5px 0; border-top:1px solid #1e293b; color:#cbd5e1; }
+  .missions-table td:first-child { color:#38bdf8; font-weight:600; white-space:nowrap; }
+  .logout { background:#334155; color:#e2e8f0; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<!-- ЭКРАН ВХОДА -->
 <div id="login" class="screen active">
-  <div class="brand"><strong>K-systems group</strong></div>
+  <div class="brand-logo">
+    <img src="logo.png" alt="K-systems group">
+  </div>
   <div class="logo">Кабинет <span>Наставника</span></div>
   <div class="subtitle">Авторизация для работы</div>
-  <input type="text" id="user" placeholder="Логин / Email" value="bykov">
-  <input type="password" id="pass" placeholder="Пароль" value="1234">
+  <input type="text" placeholder="Логин / Email" value="Роман Быков">
+  <input type="password" placeholder="Пароль" value="1234">
   <button onclick="login()">Войти</button>
 </div>
 
-<!-- ЭКРАН НАСТАВНИКА -->
 <div id="dashboard" class="screen">
-
+  <div class="avatar-circle">РБ</div>
   <div class="welcome">
     <p>Добро пожаловать,</p>
     <h1>Роман Быков!</h1>
   </div>
 
-  <div class="section-title">Ваша миссия на сегодня</div>
-  <button class="mission-btn" onclick="toggleList()">
-    <span class="date">25.10.2026</span>
-    <span class="city">г. Москва</span>
-    <span class="addr">ул. Набережная, 18</span>
-    <span class="hint">Нажмите, чтобы открыть список диагностов</span>
-  </button>
+  <div class="section-title-centered">Ваша миссия на сегодня</div>
 
-  <!-- Раскрывающийся список -->
-  <div id="diagnost-list">
-    <div class="section-title">Диагносты на обучении</div>
-
-    <div class="diag-card">
-      <div class="diag-photo"><img src="https://i.pravatar.cc/120?img=12" alt=""></div>
-      <div class="diag-info">
-        <div class="org">ООО «ТехДиагностика»</div>
-        <div class="name">Смирнов Алексей Петрович</div>
-        <div class="pos">Инженер по контролю качества</div>
-        <div class="phone">+7 912 345-67-89</div>
-        <div class="email">smirnov@tehdiagnostika.ru</div>
+  <div class="carousel-wrap">
+    <div class="carousel">
+      <div class="mission-card" onclick="openList('list1')">
+        <span class="date">25.10.26</span>
+        <span class="city">г. Москва</span>
+        <span class="addr">ул. Набережная, 18</span>
+        <span class="hint">Нажмите, чтобы открыть список диагностов</span>
       </div>
-      <div class="diag-check" onclick="toggleCheck(this)"></div>
-    </div>
-
-    <div class="diag-card">
-      <div class="diag-photo"><img src="https://i.pravatar.cc/120?img=25" alt=""></div>
-      <div class="diag-info">
-        <div class="org">АО «УралСпецМонтаж»</div>
-        <div class="name">Козлова Мария Дмитриевна</div>
-        <div class="pos">Специалист НК (ВИК)</div>
-        <div class="phone">+7 908 234-56-78</div>
-        <div class="email">kozlova@usm.ru</div>
+      <div class="mission-card" onclick="openList('list2')">
+        <span class="date">02.11.26</span>
+        <span class="city">г. Казань</span>
+        <span class="addr">ул. Кремлевская, 12</span>
+        <span class="hint">Нажмите, чтобы открыть список диагностов</span>
       </div>
-      <div class="diag-check" onclick="toggleCheck(this)"></div>
-    </div>
-
-    <div class="diag-card">
-      <div class="diag-photo"><img src="https://i.pravatar.cc/120?img=33" alt=""></div>
-      <div class="diag-info">
-        <div class="org">ООО «СтройМонтаж»</div>
-        <div class="name">Федоров Игорь Николаевич</div>
-        <div class="pos">Лаборант УЗК</div>
-        <div class="phone">+7 921 456-78-90</div>
-        <div class="email">fedorov@stroymontazh.ru</div>
+      <div class="mission-card" onclick="openList('list3')">
+        <span class="date">09.11.26</span>
+        <span class="city">г. Екатеринбург</span>
+        <span class="addr">ул. Малышева, 51</span>
+        <span class="hint">Нажмите, чтобы открыть список диагностов</span>
       </div>
-      <div class="diag-check" onclick="toggleCheck(this)"></div>
-    </div>
-
-    <div class="diag-card">
-      <div class="diag-photo"><img src="https://i.pravatar.cc/120?img=47" alt=""></div>
-      <div class="diag-info">
-        <div class="org">ПАО «ГазНефтьСервис»</div>
-        <div class="name">Андреева Ольга Сергеевна</div>
-        <div class="pos">Начальник лаборатории НК</div>
-        <div class="phone">+7 903 567-89-01</div>
-        <div class="email">andreeva@gnsv.ru</div>
-      </div>
-      <div class="diag-check" onclick="toggleCheck(this)"></div>
-    </div>
-
-    <div class="diag-card">
-      <div class="diag-photo"><img src="https://i.pravatar.cc/120?img=52" alt=""></div>
-      <div class="diag-info">
-        <div class="org">ООО «МеталлТест»</div>
-        <div class="name">Волков Дмитрий Андреевич</div>
-        <div class="pos">Дефектоскопист РК</div>
-        <div class="phone">+7 905 678-90-12</div>
-        <div class="email">volkov@metalltest.ru</div>
-      </div>
-      <div class="diag-check" onclick="toggleCheck(this)"></div>
     </div>
   </div>
 
-  <!-- Завершённые миссии -->
+  <!-- СПИСОК 1 -->
+  <div id="list1" class="diagnost-list">
+    <div class="diag-card">
+      <div class="diag-photo">НЗ</div>
+      <div class="diag-info">
+        <div class="name">Зиновьев Николай Александрович</div>
+        <div class="pos">Генеральный директор</div>
+        <div class="phone">+7 982 242-38-87</div>
+        <div class="email">gidrosservis@mail.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">ФП</div>
+      <div class="diag-info">
+        <div class="name">Фастов Пётр Витальевич</div>
+        <div class="pos">Прораб</div>
+        <div class="phone">+7 926 577-09-81</div>
+        <div class="email">Pfastov75@gmail.com</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">ЗК</div>
+      <div class="diag-info">
+        <div class="name">Зарянкин Константин Александрович</div>
+        <div class="pos">Мастер</div>
+        <div class="phone">+7 999 856-89-67</div>
+        <div class="email">zaryankinkosty@gmail.com</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">ХА</div>
+      <div class="diag-info">
+        <div class="name">Харитонов Андрей Иванович</div>
+        <div class="pos">Мастер</div>
+        <div class="phone">+7 960 669-58-38</div>
+        <div class="email">Andrey.haritonoff2016@yandex.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">СИ</div>
+      <div class="diag-info">
+        <div class="name">Сорокин Иван Александрович</div>
+        <div class="pos">Технический директор</div>
+        <div class="phone">+7 903 235-96-78</div>
+        <div class="email">S.rusher@rambler.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">ЗД</div>
+      <div class="diag-info">
+        <div class="name">Зиновьев Даниил Александрович</div>
+        <div class="pos">Изолировщик на гидроизоляции</div>
+        <div class="phone">+7 908 264-78-23</div>
+        <div class="email">sts-zin@mail.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+
+    <button class="complete-btn" onclick="completeMission()">
+      <span class="main">Завершить обучение</span>
+      <span class="sub">Отправить анкету</span>
+    </button>
+  </div>
+
+  <!-- СПИСОК 2 -->
+  <div id="list2" class="diagnost-list">
+    <div class="diag-card">
+      <div class="diag-photo">ИП</div>
+      <div class="diag-info">
+        <div class="name">Иванов Петр Сергеевич</div>
+        <div class="pos">Инженер ВИК</div>
+        <div class="phone">+7 917 345-67-89</div>
+        <div class="email">ivanov@mail.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-photo">КМ</div>
+      <div class="diag-info">
+        <div class="name">Козлов Максим Викторович</div>
+        <div class="pos">Дефектоскопист</div>
+        <div class="phone">+7 905 123-45-67</div>
+        <div class="email">kozlov@yandex.ru</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+
+    <button class="complete-btn" onclick="completeMission()">
+      <span class="main">Завершить обучение</span>
+      <span class="sub">Отправить анкету</span>
+    </button>
+  </div>
+
+  <!-- СПИСОК 3 -->
+  <div id="list3" class="diagnost-list">
+    <div class="diag-card">
+      <div class="diag-photo">СА</div>
+      <div class="diag-info">
+        <div class="name">Смирнов Алексей Павлович</div>
+        <div class="pos">Технолог УЗК</div>
+        <div class="phone">+7 912 678-90-12</div>
+        <div class="email">smirnov@gmail.com</div>
+      </div>
+      <div class="diag-check" onclick="toggleCheck(this)"></div>
+    </div>
+
+    <button class="complete-btn" onclick="completeMission()">
+      <span class="main">Завершить обучение</span>
+      <span class="sub">Отправить анкету</span>
+    </button>
+  </div>
+
+  <hr class="divider">
   <div class="section-title">Завершённые миссии</div>
   <table class="missions-table">
-    <thead>
-      <tr><th>Дата</th><th>Организация</th><th>Город</th></tr>
-    </thead>
+    <thead><tr><th>Дата</th><th>Организация</th><th>Город</th></tr></thead>
     <tbody>
-      <tr><td>14.09.2026</td><td>ООО «Легенда»</td><td>Санкт-Петербург</td></tr>
-      <tr><td>25.08.2026</td><td>ООО «Строймонтаж»</td><td>Москва</td></tr>
-      <tr><td>03.07.2026</td><td>АО «ТяжПром»</td><td>Екатеринбург</td></tr>
-      <tr><td>19.05.2026</td><td>ООО «ТехДиагностика»</td><td>Челябинск</td></tr>
+      <tr><td>14.09.26</td><td>ООО «Легенда»</td><td>Санкт-Петербург</td></tr>
+      <tr><td>25.08.26</td><td>ООО «Строймонтаж»</td><td>Москва</td></tr>
+      <tr><td>03.07.26</td><td>АО «ТяжПром»</td><td>Екатеринбург</td></tr>
+      <tr><td>19.05.26</td><td>ООО «ТехДиагностика»</td><td>Челябинск</td></tr>
     </tbody>
   </table>
 
@@ -198,6 +261,8 @@
 </div>
 
 <script>
+  let currentList = null;
+
   function login(){
     document.getElementById('login').classList.remove('active');
     document.getElementById('dashboard').classList.add('active');
@@ -205,17 +270,33 @@
 
   function logout(){
     document.getElementById('dashboard').classList.remove('active');
-    document.getElementById('diagnost-list').classList.remove('open');
+    if(currentList) document.getElementById(currentList).classList.remove('open');
+    currentList = null;
     document.getElementById('login').classList.add('active');
   }
 
-  function toggleList(){
-    document.getElementById('diagnost-list').classList.toggle('open');
+  function openList(listId){
+    // Закрываем предыдущий
+    if(currentList && currentList !== listId){
+      document.getElementById(currentList).classList.remove('open');
+    }
+    // Открываем/закрываем текущий
+    const list = document.getElementById(listId);
+    list.classList.toggle('open');
+    currentList = list.classList.contains('open') ? listId : null;
   }
 
   function toggleCheck(el){
     el.classList.toggle('checked');
     el.innerHTML = el.classList.contains('checked') ? '&#10003;' : '';
+  }
+
+  function completeMission(){
+    alert('Обучение завершено! Анкета отправлена.');
+    if(currentList){
+      document.getElementById(currentList).classList.remove('open');
+      currentList = null;
+    }
   }
 </script>
 </body>
